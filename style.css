@@ -1,0 +1,278 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding-top: 32px; /* pour éviter que le contenu soit caché sous la navbar fixe */
+  font-family: century gothic, sans-serif;
+  color: #212529;
+  background-color: rgb(240, 242, 245);
+}
+
+header {
+  padding-top: 1px;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+}
+
+pre {
+  white-space: pre-wrap; /* garde les sauts de ligne mais autorise le retour auto */
+  word-wrap: break-word; /* coupe si un mot est trop long */
+  max-width: 100%; /* jamais plus large que l’écran */
+  font-size: 1rem; /* texte responsive de base */
+}
+
+:root {
+  --img-size: 220px; /* taille des images en desktop */
+  --gap: 16px;
+  --anim-height: 300px; /* hauteur de la scène animée en desktop */
+}
+
+.header-bg {
+  background-color: rgb(240, 242, 245);
+}
+
+/* Petit reset utile */
+* {
+  box-sizing: border-box;
+}
+
+/* Zone animée (desktop / tablette) */
+.anim-zone {
+  position: relative;
+  height: var(--anim-height);
+  margin: 2rem 0;
+  overflow: visible;
+}
+
+/* Blocs texte (position absolue pour animer précisément) */
+.text-block {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 3s ease-in-out; /* durée 3s */
+  padding: 1rem;
+  z-index: 1;
+}
+
+/* Positions initiales des textes */
+.text-left {
+  left: 0;
+  width: calc(50% - var(--img-size) - var(--gap));
+  text-align: left;
+}
+.text-right {
+  right: 0;
+  width: calc(50% - var(--img-size) - var(--gap));
+  text-align: right;
+}
+
+/* Images : au centre, collées entre elles au départ */
+.img-left,
+.img-right {
+  position: absolute;
+  top: 50%;
+  transition: all 3s ease-in-out; /* durée 3s */
+  z-index: 2;
+  pointer-events: none; /* purement visuel */
+}
+
+/* Collées au centre (bord droit de gauche = centre ; bord gauche de droite = centre) */
+.img-left {
+  left: 50%;
+  transform: translate(-100%, -50%);
+}
+.img-right {
+  left: 50%;
+  transform: translate(0, -50%);
+}
+
+.img-left img,
+.img-right img {
+  width: var(--img-size);
+  height: auto;
+  display: block;
+}
+
+/*  Etat ANIMÉ (desktop / tablette)
+   - photos vers les extrémités
+   - textes se rapprochent du centre SANS se chevaucher */
+.animate .img-left {
+  left: 0;
+  transform: translate(0, -50%);
+}
+.animate .img-right {
+  left: 100%;
+  transform: translate(-100%, -50%);
+}
+
+.animate .text-left {
+  left: 32%; /* côté gauche mais proche du centre */
+  transform: translate(-50%, -50%);
+  width: 30%;
+  text-align: right;
+}
+.animate .text-right {
+  left: 68%; /* côté droit mais proche du centre */
+  transform: translate(-50%, -50%);
+  width: 30%;
+  text-align: left;
+}
+
+/* Bloc <pre> “À propos” responsive */
+.about-pre {
+  white-space: pre-wrap; /* garde les retours mais autorise le wrap */
+  word-wrap: break-word;
+  max-width: 100%;
+  font-family: century gothic, sans-serif;
+  margin-top: 300px; /* ce que tu avais avant */
+  text-align: center;
+  padding: 1%;
+  display: inline-block;
+  font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+}
+
+/*  Mobile (<576px) : layout simple, sans anim
+   - on RESET tout ce qui est absolu
+   - on passe en GRID : 2 images collées (ligne 1), puis textes (lignes 2 & 3) */
+
+@media (max-width: 575.98px) {
+  :root {
+    --img-size: 140px;
+  } /* images plus petites si on les affiche ailleurs */
+
+  .anim-zone {
+    height: auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colonnes pour coller les images */
+    gap: 0;
+    align-items: start;
+    justify-items: stretch;
+  }
+
+  /* RESET complet */
+  .anim-zone .img-left,
+  .anim-zone .img-right,
+  .anim-zone .text-block {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    transition: none !important;
+    z-index: auto !important;
+    width: auto;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* LIGNE 1 : deux images collées */
+  .img-left {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .img-right {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .img-left img,
+  .img-right img {
+    width: 100%; /* occupe toute la colonne */
+    height: auto;
+    display: block; /* évite tout liseret */
+  }
+
+  /* LIGNE 2 & 3 : les textes, centrés et en pleine largeur */
+  .text-left {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    text-align: center;
+    padding: 0.75rem 1rem;
+  }
+  .text-right {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    text-align: center;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Typo responsive en mobile */
+  .text-block h2 {
+    font-size: clamp(1.05rem, 5.2vw, 1.5rem);
+    line-height: 1.2;
+    margin: 0.5rem 0 0.25rem;
+  }
+  .text-block ul {
+    font-size: clamp(0.95rem, 4.2vw, 1.1rem);
+    margin: 0 auto;
+    max-width: 34ch;
+    padding-left: 0;
+  }
+
+  /* Le <pre> : marge plus raisonnable en mobile */
+  .about-pre {
+    margin-top: 100px !important;
+  }
+}
+
+/*carrousel bootstrap*/
+#carouselExampleDark {
+  max-width: 1000px; /* largeur max du carrousel */
+  margin: 2rem auto; /* centre horizontalement */
+  overflow: hidden; /* évite que l’image dépasse */
+}
+
+#carouselExampleDark img {
+  object-fit: cover; /* adapte les images au cadre */
+}
+
+
+/*Lien de contact sans fioriture*/
+a:link {
+  text-decoration: none;
+  color: #002E4C;
+
+}
+
+a:visited {
+  text-decoration: none;
+  color: #002E4C;
+
+}
+
+a:hover {
+  text-decoration: none;
+  color: white;
+
+}
+
+a:active {
+  text-decoration: none;
+  background-color:#e1e7e7 ;
+  color: #c0c2c4;
+}
+
+a.fixed {
+  text-decoration: none;
+  color: white;
+}
+
+a.fixed:link,
+a.fixed:visited,
+a.fixed:hover,
+a.fixed:active {
+  text-decoration: none;
+  color: white;
+}
+
+/* pour scroll via les liens jusqu'en bas de page, exemple pour l apartie formation*/
+#formation {
+  padding-bottom: 500px; /* ou plus selon le cas */
+}
