@@ -5,7 +5,7 @@ body {
   padding-top: 32px; /* pour éviter que le contenu soit caché sous la navbar fixe */
   font-family: century gothic, sans-serif;
   color: white;
-  background-color: #212529;
+  background-color: black;
 }
 
 header {
